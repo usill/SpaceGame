@@ -4,6 +4,7 @@ const game = {
   canvasWidth: canvas.offsetWidth,
   canvasHeight: canvas.offsetHeight,
   ctx: null,
+  isGameStart: false,
   score: 0,
   KEYS: {
     left: 65,
@@ -50,13 +51,14 @@ game.preload = function() {
 game.run = function() {
   window.requestAnimationFrame(() => {
     this.render();
-    this.run();
+    if(this.isGameStart) {
+      this.run();
+    }
+    
   })
 }
 
 game.render = function() {
-  
-  
   this.ctx.drawImage(this.sprites.background, 0, 0);
   this.ctx.fillText(`Score: ${this.score}`, 20, 40);
   this.ctx.drawImage(this.sprites.ship, SpaceShip.positionX, SpaceShip.positionY);
@@ -80,14 +82,27 @@ game.createAsteroids = function() {
       if(item.y > game.canvasHeight) {
         Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== item)
       }
-      if(item.y + this.height > SpaceShip.positionY && 
+      if(item.y + Asteroid.height > SpaceShip.positionY && 
         item.y < SpaceShip.positionY + SpaceShip.height &&
-        item.x + this.width > SpaceShip.positionX &&
+        item.x + Asteroid.width > SpaceShip.positionX &&
         item.x < SpaceShip.positionX + SpaceShip.width) {
-          console.log(1) /// ???????
+          this.isGameStart = false;
+          startBG.style.display = 'flex';
+          looseBlock.style.display = 'block';
+          scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
+          this.clearState();
         }
     })
   }, 40)
+}
+
+game.clearState = function() {
+  Lazer.lazerList = [];
+  Asteroid.asteroidList = [];
+  clearInterval(Lazer.lazerMove)
+  clearInterval(Asteroid.asteroidMove)
+  clearInterval(Asteroid.asteroidSpawn)
+  this.score = 0;
 }
 
 const SpaceShip = {
@@ -178,7 +193,11 @@ Asteroid.spawn = function() {
 
 const startBG = document.querySelector('.start');
 const startButton = document.querySelector('.start__button');
+const looseBlock = document.querySelector('.start__lose');
+const scoreInfoBlock = document.querySelector('.start__subtitle')
 startButton.addEventListener('click', () => {
+  game.isGameStart = true;
   game.start();
-  startBG.style.display = 'none'
+  startBG.style.display = 'none';
+  looseBlock.style.display = 'none';
 })

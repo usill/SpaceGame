@@ -10,7 +10,8 @@
   position: absolute;
   background-image: url(./img/background.png);
   display: flex;
-  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .start__button {
@@ -21,4 +22,14 @@
   color: #fff;
   font-size: 28px;
   cursor: pointer;
+}
+
+
+.start__title, .start__subtitle {
+  text-align: center;
+  color: white;
+}
+
+.start__lose {
+  display: none;
 }
