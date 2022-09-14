@@ -54,7 +54,12 @@ game.run = function() {
     if(this.isGameStart) {
       this.run();
     }
-    
+    if(this.score === 500 && Asteroid.moveSpeed === 40 ||
+      this.score === 1000 && Asteroid.moveSpeed === 35 ||
+      this.score === 1500 && Asteroid.moveSpeed === 30 ||
+      this.score === 2000 && Asteroid.moveSpeed === 25) {
+      this.levelUp();
+    }
   })
 }
 
@@ -68,41 +73,54 @@ game.render = function() {
   for(let asteroid in Asteroid.asteroidList) {
     this.ctx.drawImage(this.sprites.asteroid, Asteroid.asteroidList[asteroid].x, Asteroid.asteroidList[asteroid].y)
   }
-  
 }
 
 game.createAsteroids = function() {
-  Asteroid.asteroidSpawn = setInterval(() => {
-    Asteroid.spawn();
-  }, 500)
+  Asteroid.asteroidSpawn = setInterval(() => { Asteroid.spawn(); }, Asteroid.spawnFrequency)
   
-  Asteroid.asteroidMove = setInterval(() => {
-    Asteroid.asteroidList.map(item => {
-      item.y += 10;
-      if(item.y > game.canvasHeight) {
-        Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== item)
+  Asteroid.asteroidMove = setInterval(this.setSpawnInterval, Asteroid.moveSpeed)
+}
+
+game.levelUp = function() {
+  clearInterval(Asteroid.asteroidMove);
+  clearInterval(Asteroid.asteroidSpawn);
+  Asteroid.moveSpeed -= 5;
+  Asteroid.spawnFrequency -= 100;
+  Asteroid.asteroidSpawn = setInterval(() => { Asteroid.spawn() }, Asteroid.spawnFrequency)
+  Asteroid.asteroidMove = setInterval(this.setSpawnInterval, Asteroid.moveSpeed)
+}
+
+game.setSpawnInterval = () => {
+  Asteroid.asteroidList.map(item => {
+    item.y += 10;
+    if(item.y > game.canvasHeight) {
+      Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== item)
+    }
+    if(item.y + Asteroid.height > SpaceShip.positionY && 
+      item.y < SpaceShip.positionY + SpaceShip.height &&
+      item.x + Asteroid.width > SpaceShip.positionX &&
+      item.x < SpaceShip.positionX + SpaceShip.width) {
+        game.loose();
       }
-      if(item.y + Asteroid.height > SpaceShip.positionY && 
-        item.y < SpaceShip.positionY + SpaceShip.height &&
-        item.x + Asteroid.width > SpaceShip.positionX &&
-        item.x < SpaceShip.positionX + SpaceShip.width) {
-          this.isGameStart = false;
-          startBG.style.display = 'flex';
-          looseBlock.style.display = 'block';
-          scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
-          this.clearState();
-        }
-    })
-  }, 40)
+  })
+}
+
+game.loose = function() {
+  this.isGameStart = false;
+  startBG.style.display = 'flex';
+  looseBlock.style.display = 'block';
+  scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
+  this.clearState();
 }
 
 game.clearState = function() {
+  this.score = 0;
   Lazer.lazerList = [];
   Asteroid.asteroidList = [];
   clearInterval(Lazer.lazerMove)
-  clearInterval(Asteroid.asteroidMove)
-  clearInterval(Asteroid.asteroidSpawn)
-  this.score = 0;
+  clearInterval(Asteroid.asteroidMove, Asteroid.moveSpeed)
+  clearInterval(Asteroid.asteroidSpawn, Asteroid.spawnFrequency)
+  
 }
 
 const SpaceShip = {
@@ -179,12 +197,16 @@ const Asteroid = {
   asteroidList: [],
   asteroidMove: null,
   asteroidSpawn: null,
+  spawnFrequency: 500,
+  moveSpeed: 40,
 }
+
+
 
 Asteroid.spawn = function() {
   let asteroid = {
     y: 0,
-    x: Math.random() * game.canvasWidth - Asteroid.width,
+    x: Math.random() * game.canvasWidth,
   }
   this.asteroidList.push(asteroid);
 }
