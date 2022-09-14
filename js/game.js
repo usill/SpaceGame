@@ -1,3 +1,7 @@
+import Asteroid from "./Asteroid.js";
+import Lazer from "./Lazer.js";
+import SpaceShip from "./SpaceShip.js"
+import UIelements from "./ui.elements.js";
 
 const game = {
   canvas: null,
@@ -107,9 +111,9 @@ game.setSpawnInterval = () => {
 
 game.loose = function() {
   this.isGameStart = false;
-  startBG.style.display = 'flex';
-  looseBlock.style.display = 'block';
-  scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
+  UIelements.startBG.style.display = 'flex';
+  UIelements.looseBlock.style.display = 'block';
+  UIelements.scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
   this.clearState();
 }
 
@@ -123,103 +127,7 @@ game.clearState = function() {
   
 }
 
-const SpaceShip = {
-  width: 64,
-  height: 64,
-  positionX: null,
-  positionY: null,
-  speed: 5,
-}
-
-SpaceShip.setPosition = function() {
-  this.positionX = (game.canvasWidth - this.width) / 2;
-  this.positionY = game.canvasHeight - this.height;
-};
-
-SpaceShip.setEvents = function() {
-  this.setPosition();
-  this.move();
-  this.fire();
-};
-
-SpaceShip.move = function() {
-  document.addEventListener('mousemove', (e) => {
-    if(e.clientX < 600 - this.width / 2 &&
-       e.clientX > 0 + this.width / 2) {
-      this.positionX = e.clientX - this.width / 2;
-    }
-    
-  })
-};
-
-SpaceShip.fire = function() {
-  game.canvas.addEventListener('click', () => {
-    Lazer.lazerList.push({ x: this.positionX, y: this.positionY });
-    if(this.lazerMove) 
-      clearInterval(this.lazerMove, 200)
-    this.lazerMove = setInterval(() => {
-      Lazer.lazerList.map((item) => {
-        if(item.y < this.height) {
-          Lazer.lazerList = Lazer.lazerList.filter(el => el !== item); // clear no visible items
-        }
-        Asteroid.asteroidList.map(asteroid => {
-          if(asteroid.y + Asteroid.height > item.y && 
-            asteroid.y < item.y + Lazer.height &&
-            asteroid.x + Asteroid.width > item.x &&
-            asteroid.x < item.x + Lazer.width) {
-
-            Lazer.lazerList = Lazer.lazerList.filter(el => el !== item);
-            Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== asteroid);
-            game.score += 50;
-          }
-
-          
-        })
-        
-        item.y -= 10;
-      })
-      
-    }, 20)
-
-  })
-}
-
-const Lazer = {
-  width: 16,
-  height: 16,
-  lazerList: [],
-  lazerMove: null,
-}
-
-const Asteroid = {
-  width: 64,
-  height: 64,
-  asteroidList: [],
-  asteroidMove: null,
-  asteroidSpawn: null,
-  spawnFrequency: 500,
-  moveSpeed: 40,
-}
 
 
 
-Asteroid.spawn = function() {
-  let asteroid = {
-    y: 0,
-    x: Math.random() * game.canvasWidth,
-  }
-  this.asteroidList.push(asteroid);
-}
-
-
-
-const startBG = document.querySelector('.start');
-const startButton = document.querySelector('.start__button');
-const looseBlock = document.querySelector('.start__lose');
-const scoreInfoBlock = document.querySelector('.start__subtitle')
-startButton.addEventListener('click', () => {
-  game.isGameStart = true;
-  game.start();
-  startBG.style.display = 'none';
-  looseBlock.style.display = 'none';
-})
+export default game;
