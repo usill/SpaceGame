@@ -31,7 +31,6 @@ Explode.trigger = function (item) {
 
 Explode.explodeFunc = function() {
     this.explodesList = this.explodesList.filter(item => item !== this.explodesList[0]);
-    console.log(this.explodesList);
 }
 
 export default Explode;

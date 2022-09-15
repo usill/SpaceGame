@@ -34,6 +34,7 @@ game.init = function() {
   this.canvas = document.querySelector('#canvas')
   this.ctx = this.canvas.getContext('2d');
   SpaceShip.setEvents();
+  Explode.trigger();
   this.createAsteroids();
   this.ctx.fillStyle = "#fff";
   this.ctx.font = "25px Vardana";
@@ -136,7 +137,7 @@ game.clearState = function() {
   }
 
   
-  
+  Explode.explodeInterval = null;
   Asteroid.moveSpeed = Asteroid.defaultMoveSpeed;
   Asteroid.spawnFrequency = Asteroid.defaultSpawnFrequency;
 }
