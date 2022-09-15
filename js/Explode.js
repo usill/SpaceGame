@@ -24,7 +24,8 @@ Explode.trigger = function (item) {
       Asteroid.asteroidList = Asteroid.asteroidList.filter(
         (el) => el !== asteroid
       );
-      game.score += 50;
+      game.score += 25;
+      game.explodeCount += 1;
     }
   });
 };
