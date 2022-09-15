@@ -139,10 +139,10 @@ game.createAsteroids = function () {
 
 game.levelUp = function () {
   if (
-    (this.score === this.levelsScore.one && Asteroid.moveSpeed === 40) ||
-    (this.score === this.levelsScore.two && Asteroid.moveSpeed === 35) ||
-    (this.score === this.levelsScore.three && Asteroid.moveSpeed === 30) ||
-    (this.score === this.levelsScore.four && Asteroid.moveSpeed === 25)
+    (this.score > this.levelsScore.one && this.score < this.levelsScore.two && Asteroid.moveSpeed === 40) ||
+    (this.score === this.levelsScore.two && this.score < this.levelsScore.three && Asteroid.moveSpeed === 35) ||
+    (this.score === this.levelsScore.three && this.score < this.levelsScore.four && Asteroid.moveSpeed === 30) ||
+    (this.score === this.levelsScore.four && this.score < this.levelsScore.five && Asteroid.moveSpeed === 25)
   ) {
     clearInterval(Asteroid.asteroidMove);
     clearInterval(Asteroid.asteroidSpawn);
