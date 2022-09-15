@@ -2,6 +2,7 @@ import Asteroid from "./Asteroid.js";
 import Lazer from "./Lazer.js";
 import SpaceShip from "./SpaceShip.js"
 import UIelements from "./ui.elements.js";
+import Explode from "./Explode.js";
 
 const game = {
   canvas: null,
@@ -19,6 +20,7 @@ const game = {
     ship: null,
     lazer: null,
     asteroid: null,
+    explode: null,
   }
 };
 
@@ -71,12 +73,17 @@ game.render = function() {
   this.ctx.drawImage(this.sprites.background, 0, 0);
   this.ctx.fillText(`Score: ${this.score}`, 20, 40);
   this.ctx.drawImage(this.sprites.ship, SpaceShip.positionX, SpaceShip.positionY);
+  for(let explode in Explode.explodesList) {
+    this.ctx.drawImage(this.sprites.explode, Explode.explodesList[explode].x, Explode.explodesList[explode].y)
+  }
   for(let lazer in Lazer.lazerList) {
     this.ctx.drawImage(this.sprites.lazer, Lazer.lazerList[lazer].x + 24, Lazer.lazerList[lazer].y) // draw lazers
   }
+  
   for(let asteroid in Asteroid.asteroidList) {
     this.ctx.drawImage(this.sprites.asteroid, Asteroid.asteroidList[asteroid].x, Asteroid.asteroidList[asteroid].y)
   }
+  
 }
 
 game.createAsteroids = function() {
@@ -121,10 +128,11 @@ game.clearState = function() {
   this.score = 0;
   Lazer.lazerList = [];
   Asteroid.asteroidList = [];
-  if(Lazer.lazerMove && Asteroid.asteroidMove && Asteroid.asteroidSpawn) {
+  if(Lazer.lazerMove && Asteroid.asteroidMove && Asteroid.asteroidSpawn && Explode.explodeFunc) {
     clearInterval(Lazer.lazerMove)
     clearInterval(Asteroid.asteroidMove)
     clearInterval(Asteroid.asteroidSpawn)
+    clearInterval(Explode.explodeInterval)
   }
 
   

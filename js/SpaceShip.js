@@ -1,6 +1,6 @@
 import game from './game.js'
 import Lazer from './Lazer.js';
-import Asteroid from './Asteroid.js';
+import Explode from './Explode.js';
 
 const SpaceShip = {
   width: 64,
@@ -43,18 +43,7 @@ SpaceShip.fire = function () {
           Lazer.lazerList = Lazer.lazerList.filter(el => el !== item); // clear no visible items
         }
         // console.log(Lazer.lazerList)
-        Asteroid.asteroidList.map(asteroid => {
-          if(asteroid.y + Asteroid.height > item.y && 
-            asteroid.y < item.y + Lazer.height &&
-            asteroid.x + Asteroid.width > item.x &&
-            asteroid.x < item.x + Lazer.width) {
-            Lazer.lazerList = Lazer.lazerList.filter(el => el !== item);
-            Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== asteroid);
-            game.score += 50;
-          }
-
-          
-        })
+        Explode.trigger(item);
         
         item.y -= 10;
       })
