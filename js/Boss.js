@@ -62,6 +62,7 @@ Boss.IntervalFunc = function() {
   if(this.health <= 0) {
     this.clearIntervals();
     this.shots = [];
+    game.score += 500;
     setTimeout(() => {
       const interval = setInterval(() => {
         Boss.y += 5;

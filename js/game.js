@@ -4,6 +4,7 @@ import SpaceShip from "./SpaceShip.js";
 import UIelements from "./ui.elements.js";
 import Explode from "./Explode.js";
 import Boss from "./Boss.js";
+import Storm from "./Storm.js"
 
 const game = {
   canvas: null,
@@ -21,6 +22,11 @@ const game = {
     three: 1000, //2250
     four: 1500, //3500
     five: 2000, // 5000
+    six: 2500,
+    seven: 3000,
+    eight: 3500,
+    nine: 4000,
+    ten: 4500,
   },
   sprites: {
     background: null,
@@ -31,13 +37,14 @@ const game = {
     firstBoss: null,
     healthBar: null,
     bossProjectile: null,
+    storm: null,
   },
 };
 
 game.start = function () {
+  this.clearState();
   this.init();
   this.preload();
-  Boss.shots = [];
   this.run();
 };
 
@@ -46,6 +53,7 @@ game.init = function () {
   this.ctx = this.canvas.getContext("2d");
   SpaceShip.setEvents();
   Explode.trigger();
+  
   this.createAsteroids();
   this.ctx.fillStyle = "#fff";
   this.ctx.font = "25px Vardana";
@@ -124,6 +132,10 @@ game.render = function () {
       this.ctx.drawImage(this.sprites.bossProjectile, 0, 0, 16, 19, item.x, item.y, 16, 19);
     })
   }
+
+  for(let storm in Storm.stormList) {
+    this.ctx.drawImage(this.sprites.storm, Storm.stormList[storm].x, Storm.stormList[storm].y)
+  }
 };
 
 game.createAsteroids = function () {
@@ -144,14 +156,11 @@ game.levelUp = function () {
     (this.score === this.levelsScore.three && this.score < this.levelsScore.four && Asteroid.moveSpeed === 30) ||
     (this.score === this.levelsScore.four && this.score < this.levelsScore.five && Asteroid.moveSpeed === 25)
   ) {
-    clearInterval(Asteroid.asteroidMove);
-    clearInterval(Asteroid.asteroidSpawn);
-    Asteroid.moveSpeed -= 5;
-    Asteroid.spawnFrequency -= 100;
-    this.createAsteroids();
-    this.level += 1;
+    this.nextLevel();
   }
-  else if(this.score === this.levelsScore.five && Asteroid.moveSpeed === 20 && !this.isFirstBossShow) {
+  else if(this.score > this.levelsScore.five && this.score < this.levelsScore.six && Asteroid.moveSpeed === 20 && !this.isFirstBossShow) {
+    Asteroid.moveSpeed = 40;
+    Asteroid.spawnFrequency = 600;
     this.isFirstBossShow = true;
     clearInterval(Asteroid.asteroidSpawn);
     this.level += 1;
@@ -161,7 +170,25 @@ game.levelUp = function () {
       this.boss = !this.boss
     }, 2000)
   }
+  else if(this.score > this.levelsScore.six && this.score < this.levelsScore.seven && Asteroid.moveSpeed === 40 ||
+          this.score > this.levelsScore.seven && this.score < this.levelsScore.eight && Asteroid.moveSpeed === 35 ||
+          this.score > this.levelsScore.eight && this.score < this.levelsScore.nine && Asteroid.moveSpeed === 30 ||
+          this.score > this.levelsScore.nine && this.score < this.levelsScore.ten && Asteroid.moveSpeed === 25) {
+    this.nextLevel();
+    clearInterval(Storm.stormMoveInterval)
+    clearInterval(Storm.stormFrequentlyInterval)
+    Storm.spawn();
+  }
 };
+
+game.nextLevel = function() {
+  clearInterval(Asteroid.asteroidMove);
+  clearInterval(Asteroid.asteroidSpawn);
+  Asteroid.moveSpeed -= 5;
+  Asteroid.spawnFrequency -= 100;
+  this.createAsteroids();
+  this.level += 1;
+}
 
 game.setSpawnInterval = () => {
   Asteroid.asteroidList.map((item) => {
@@ -190,7 +217,8 @@ game.loose = function () {
 };
 
 game.clearState = function () {
-  this.score = 0;
+  clearInterval(Storm.stormMoveInterval);
+  clearInterval(Storm.stormFrequentlyInterval);
   Asteroid.moveSpeed = 40;
   Asteroid.spawnFrequency = 500;
   Lazer.lazerList = [];
@@ -206,6 +234,10 @@ game.clearState = function () {
   Explode.explodeInterval = null;
   Asteroid.moveSpeed = Asteroid.defaultMoveSpeed;
   Asteroid.spawnFrequency = Asteroid.defaultSpawnFrequency;
+
+  setTimeout(() => {
+    this.score = 0;
+  }, 1000)
 };
 
 export default game;

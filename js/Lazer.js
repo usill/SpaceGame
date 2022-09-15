@@ -4,7 +4,7 @@ const Lazer = {
   width: 16,
   height: 16,
   lazerList: [],
-  damage: 2,
+  damage: 10,
   lazerMove: null,
 }
 
