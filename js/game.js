@@ -16,11 +16,11 @@ const game = {
   score: 0,
   level: 1,
   levelsScore: {
-    one: 100, //500
-    two: 200, //1250
-    three: 300, //2250
-    four: 400, //3500
-    five: 500, // 5000
+    one: 500, //500
+    two: 1250, //1250
+    three: 2250, //2250
+    four: 3500, //3500
+    five: 5000, // 5000
   },
   sprites: {
     background: null,
