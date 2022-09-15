@@ -121,10 +121,16 @@ game.clearState = function() {
   this.score = 0;
   Lazer.lazerList = [];
   Asteroid.asteroidList = [];
-  clearInterval(Lazer.lazerMove)
-  clearInterval(Asteroid.asteroidMove, Asteroid.moveSpeed)
-  clearInterval(Asteroid.asteroidSpawn, Asteroid.spawnFrequency)
+  if(Lazer.lazerMove && Asteroid.asteroidMove && Asteroid.asteroidSpawn) {
+    clearInterval(Lazer.lazerMove)
+    clearInterval(Asteroid.asteroidMove)
+    clearInterval(Asteroid.asteroidSpawn)
+  }
+
   
+  
+  Asteroid.moveSpeed = Asteroid.defaultMoveSpeed;
+  Asteroid.spawnFrequency = Asteroid.defaultSpawnFrequency;
 }
 
 

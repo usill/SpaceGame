@@ -18,7 +18,7 @@ SpaceShip.setPosition = function() {
 SpaceShip.setEvents = function() {
   this.setPosition();
   this.move();
-  this.fire();
+  game.canvas.onclick = this.fire.bind(this)
 };
 
 SpaceShip.move = function() {
@@ -31,22 +31,23 @@ SpaceShip.move = function() {
   })
 };
 
-SpaceShip.fire = function() {
-  game.canvas.addEventListener('click', () => {
+SpaceShip.fire = function () {
     Lazer.lazerList.push({ x: this.positionX, y: this.positionY });
-    if(this.lazerMove) 
-      clearInterval(this.lazerMove, 200)
-    this.lazerMove = setInterval(() => {
+    if(Lazer.lazerMove) 
+      clearInterval(Lazer.lazerMove, 200)
+      
+    Lazer.lazerMove = setInterval(() => {
       Lazer.lazerList.map((item) => {
-        if(item.y < this.height) {
+        if(item.y < game.height) {
+          
           Lazer.lazerList = Lazer.lazerList.filter(el => el !== item); // clear no visible items
         }
+        // console.log(Lazer.lazerList)
         Asteroid.asteroidList.map(asteroid => {
           if(asteroid.y + Asteroid.height > item.y && 
             asteroid.y < item.y + Lazer.height &&
             asteroid.x + Asteroid.width > item.x &&
             asteroid.x < item.x + Lazer.width) {
-
             Lazer.lazerList = Lazer.lazerList.filter(el => el !== item);
             Asteroid.asteroidList = Asteroid.asteroidList.filter(el => el !== asteroid);
             game.score += 50;
@@ -59,8 +60,6 @@ SpaceShip.fire = function() {
       })
       
     }, 20)
-
-  })
 }
 
 export default SpaceShip;
