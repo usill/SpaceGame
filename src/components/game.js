@@ -64,7 +64,7 @@ game.preload = function () {
   let required = Object.keys(this.sprites).length;
   for (let key in this.sprites) {
     this.sprites[key] = new Image();
-    this.sprites[key].src = `img/${key}.png`;
+    this.sprites[key].src = `images/${key}.png`;
     this.sprites[key].addEventListener("load", () => {
       loadedCount++;
       if (loadedCount >= required) {
@@ -210,9 +210,7 @@ game.setSpawnInterval = () => {
 game.loose = function () {
   Boss.clearIntervals();
   this.isGameStart = false;
-  UIelements.startBG.style.display = "flex";
-  UIelements.looseBlock.style.display = "block";
-  UIelements.scoreInfoBlock.innerText = `Вы набрали ${this.score} очков`;
+  UIelements.showLooseDisplay();
   this.clearState();
 };
 
@@ -234,10 +232,7 @@ game.clearState = function () {
   Explode.explodeInterval = null;
   Asteroid.moveSpeed = Asteroid.defaultMoveSpeed;
   Asteroid.spawnFrequency = Asteroid.defaultSpawnFrequency;
-
-  setTimeout(() => {
-    this.score = 0;
-  }, 1000)
+  this.score = 0;
 };
 
 export default game;

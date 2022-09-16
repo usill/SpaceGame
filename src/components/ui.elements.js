@@ -14,4 +14,10 @@ UIelements.startButton.addEventListener('click', function() {
   UIelements.looseBlock.style.display = 'none';
 })
 
+UIelements.showLooseDisplay = function() {
+  this.startBG.style.display = "flex";
+  this.looseBlock.style.display = "block";
+  this.scoreInfoBlock.innerText = `Вы набрали ${game.score} очков`;
+}
+
 export default UIelements;
