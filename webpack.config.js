@@ -36,7 +36,7 @@ module.exports = (env, argv) => {
           ]
         },
         {
-          test: /\.(png|jp(e*)g|svg|gif)$/,
+          test: /\.(png|jp(e*)g|svg|gif")$/,
           use: [
             {
               loader: "file-loader",
@@ -46,6 +46,15 @@ module.exports = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.mp3/,
+          use: {
+            loader: "file-loader",
+            options: {
+              name: "music/[name].[ext]"
+            }
+          }
+        }
       ]
     },
     plugins: [

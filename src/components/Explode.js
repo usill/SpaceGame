@@ -1,6 +1,7 @@
 import Asteroid from "./Asteroid.js";
 import Lazer from "./Lazer.js";
 import game from "./game.js";
+
 const Explode = {
   explodesList: [],
   explodeFunc: null,

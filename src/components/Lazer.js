@@ -4,12 +4,12 @@ const Lazer = {
   width: 16,
   height: 16,
   lazerList: [],
-  damage: 10,
+  damage: 5,
   lazerMove: null,
 }
 
 Lazer.shot = function() {
-  Lazer.lazerList.map(item => {
+  this.lazerList.map(item => {
     if (
       Boss.y + Boss.height > item.y &&
       Boss.y < item.y + this.height &&
